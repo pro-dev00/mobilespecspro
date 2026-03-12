@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import AdBanner from './components/AdBanner';
 import Home from './pages/Home';
 import Store from './pages/Store';
 import ProductDetail from './pages/ProductDetail';
@@ -36,9 +37,9 @@ export default function App() {
     switch (activeTab) {
       case 'home':
         return (
-          <Home 
-            onPhoneClick={handlePhoneClick} 
-            onExplore={() => setActiveTab('store')} 
+          <Home
+            onPhoneClick={handlePhoneClick}
+            onExplore={() => setActiveTab('store')}
             onCompare={() => setActiveTab('compare')}
             onAIAdvisor={() => setActiveTab('ai')}
           />
@@ -47,9 +48,9 @@ export default function App() {
         return <Store onPhoneClick={handlePhoneClick} />;
       case 'product':
         return selectedPhone ? (
-          <ProductDetail 
-            phone={selectedPhone} 
-            onBack={() => setActiveTab('store')} 
+          <ProductDetail
+            phone={selectedPhone}
+            onBack={() => setActiveTab('store')}
             onCompare={() => handleAddToCompare(selectedPhone)}
           />
         ) : (
@@ -59,7 +60,7 @@ export default function App() {
         return <AISuggestion />;
       case 'compare':
         return (
-          <Compare 
+          <Compare
             comparisonList={comparisonList}
             onRemove={handleRemoveFromCompare}
             onAdd={(phone) => {
@@ -82,9 +83,9 @@ export default function App() {
         );
       default:
         return (
-          <Home 
-            onPhoneClick={handlePhoneClick} 
-            onExplore={() => setActiveTab('store')} 
+          <Home
+            onPhoneClick={handlePhoneClick}
+            onExplore={() => setActiveTab('store')}
             onCompare={() => setActiveTab('compare')}
             onAIAdvisor={() => setActiveTab('ai')}
           />
@@ -95,19 +96,31 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar activeTab={activeTab === 'product' ? 'store' : activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-1">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderContent()}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+      <div className="flex-1 flex flex-col lg:flex-row">
+        <main className="flex-1 min-w-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {renderContent()}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+        {/* Sidebar Ad - visible on large screens */}
+        <aside className="hidden lg:flex flex-col items-center py-8 px-2">
+          <div className="sticky top-24">
+            <AdBanner />
+          </div>
+        </aside>
+      </div>
+      {/* Mobile Ad - visible on small screens */}
+      <div className="flex lg:hidden justify-center py-6">
+        <AdBanner />
+      </div>
       <Footer />
     </div>
   );
